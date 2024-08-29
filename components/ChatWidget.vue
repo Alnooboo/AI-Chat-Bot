@@ -18,8 +18,16 @@ const messages = ref<Message[]>([]);
 
 const usersTyping = ref<User[]>([]);
 
-// send messages to Chat API here
-// and in the empty function below
+//providing the full conversation to the API:
+const messagesForApi = computed(
+  () =>
+    messages.value
+      .map((m) => ({
+        role: m.userId === "user" ? "user" : "assistant",
+        content: m.text,
+      }))
+      .slice(-4) //get the last 4 messages
+);
 
 async function handleNewMessage(message: Message) {
   //making the message apear as message pubble
@@ -31,15 +39,10 @@ async function handleNewMessage(message: Message) {
     method: "POST",
     //definig the message body:
     body: {
-      messages: [
-        {
-          role: "user",
-          content: message.text,
-        },
-      ],
+      messages: messagesForApi.value,
     },
   });
-  //check on the response from the api
+
   if (!res.choices[0].message?.content) return;
 
   //definig the msg to be exact to the Message interface
@@ -49,12 +52,13 @@ async function handleNewMessage(message: Message) {
     createdAt: new Date(),
     text: res.choices[0].message?.content,
   };
-  //pushing the message:
+
   messages.value.push(msg);
   //the bot stopped typing:
   usersTyping.value = [];
 }
 </script>
+
 <template>
   <ChatBox
     :me="me"
