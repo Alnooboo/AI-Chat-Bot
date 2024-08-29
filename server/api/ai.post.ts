@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { customerSupportAgent } from "~/agents";
 
 export default defineEventHandler(async (event) => {
   // Getting the API key
@@ -16,6 +17,7 @@ export default defineEventHandler(async (event) => {
     model: "gpt-4",
     messages: body.messages || [],
     temperature: body.temperature || 1,
+    ...customerSupportAgent(body),
   });
 
   return completion;

@@ -6,11 +6,13 @@ export const customerSupportAgent = createAgent((context) => {
       /**
        * Train bot to only respond to app specific questions
        */
+      //provide a background on how it should behaive
       {
         role: "system",
         content: `You are a helpful customer support agent for the 'Social Media Post Generator' application. 
         This software takes an article URL and makes an announcement. Don't answer any question not related to the 'Social Media Post Generator' application.`,
       },
+      //example conversation:
       {
         role: "user",
         content: `If I ask any question NOT related to the 
@@ -18,6 +20,7 @@ export const customerSupportAgent = createAgent((context) => {
         Instead politely decline.
         `,
       },
+      //how to politly response
       {
         role: "assistant",
         content:
@@ -37,7 +40,7 @@ export const customerSupportAgent = createAgent((context) => {
         role: "user",
         content: "How is 'Social Media Post Generator' built?",
       },
-      { role: "assistant", content: "With GPT-3 and Vue.js! " },
+      { role: "assistant", content: "With GPT-4o and Vue.js! " },
 
       // human support
       { role: "user", content: "Is support available 24/7" },
