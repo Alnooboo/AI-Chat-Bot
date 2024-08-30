@@ -16,11 +16,16 @@ Authorization: Bearer {{$dotenv NUXT_OPENAI_API_KEY}}
 POST http://localhost:3000/api/ai
 Content-Type: application/json
 
+# {
+#   "messages":[
+#     {
+#       "role":"user",
+#       "content":"Are we there yet?"
+#     }
+#   ]
+# }
+
 {
-  "messages":[
-    {
-      "role":"user",
-      "content":"Are we there yet?"
-    }
-  ]
+  "agent":"twitterAgent",
+  "url":"https://vueschool.io/articles/news/vue-composables/"
 }
