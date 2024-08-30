@@ -1094,13 +1094,56 @@ const customerSupportAgent = createAgent((context) => {
   };
 });
 
+const facebookAgent = createAgent((context) => {
+  return {
+    messages: [
+      {
+        role: "system",
+        content: "You are a friendly social media influencer sharing a new blog post"
+      },
+      {
+        role: "user",
+        content: `Create a facebook post to hype the following article:  ${context.url}. Use line breaks for easy reading`
+      }
+    ]
+  };
+});
+
+const twitterAgent = createAgent((context) => {
+  return {
+    messages: [
+      {
+        role: "system",
+        content: "You are an exciting social media influencer sharing a new blog post"
+      },
+      {
+        role: "user",
+        content: `Create a tweet about the following article:  ${context.url}. Use line breaks for easy reading. MUST be shorter than 280 characters! MUST include URL`
+      }
+    ],
+    max_tokens: 500
+  };
+});
+
 function createAgent(agent) {
   return agent;
 }
 
+const agents = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  customerSupportAgent: customerSupportAgent,
+  default: createAgent,
+  facebookAgent: facebookAgent,
+  twitterAgent: twitterAgent
+});
+
 const ai_post = defineEventHandler(async (event) => {
   const { OPENAI_API_KEY } = useRuntimeConfig();
   const body = await readBody(event);
+  const agent = body.agent || "customerSupportAgent";
+  if (!Object.keys(agents).includes(agent)) {
+    throw new Error(`${agent} doesn't exist`);
+  }
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY
   });
@@ -1108,7 +1151,8 @@ const ai_post = defineEventHandler(async (event) => {
     model: "gpt-4",
     messages: body.messages || [],
     temperature: body.temperature || 1,
-    ...customerSupportAgent(body)
+    //@ts-expect-error checking above if the agent exists
+    ...agents[agent](body)
   });
   return completion;
 });
