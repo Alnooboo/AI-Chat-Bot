@@ -6,7 +6,7 @@ export const useChatAi = ({ agent }: { agent: Agent }) => {
   const state = ref<AsyncState>(null);
   const error = ref();
 
-  //get hte response and its data
+  //get the response and its data
   const res = ref<OpenAI.Chat.Completions.ChatCompletion>();
 
   const usage = computed(() => res.value?.usage);
@@ -18,7 +18,7 @@ export const useChatAi = ({ agent }: { agent: Agent }) => {
   async function chat(options: Record<string, any>) {
     try {
       state.value = "loading";
-      //contorel the load time
+      //controle the load time
       const result =
         await fetchWithTimeout<OpenAI.Chat.Completions.ChatCompletion>(
           `/api/ai`,
